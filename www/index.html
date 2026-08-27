@@ -1,73 +1,97 @@
-<!DOCTYPE html><html dir="rtl" lang="ar"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>دال سوشيال PRO</title><style>
-*{box-sizing:border-box}body{margin:0;background:#0a0a0a;color:#fff;font-family:system-ui;padding-bottom:85px}
+<!DOCTYPE html><html dir="rtl" lang="ar"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>دال ULTIMATE</title><style>
+*{box-sizing:border-box}body{margin:0;background:#000;color:#fff;font-family:system-ui;padding-bottom:80px}
 header{background:#0f5132;padding:12px;text-align:center;font-weight:900;position:sticky;top:0;z-index:10}
-.card{background:#1a1a1a;margin:8px;padding:12px;border-radius:16px;border:1px solid #222}
-input,textarea{width:100%;padding:12px;border-radius:12px;background:#222;color:#fff;border:1px solid #333}
-button{background:#0f5132;color:#fff;border:0;padding:10px;border-radius:20px;width:100%;font-weight:900;margin-top:6px}
+.card{background:#1e1e1e;margin:8px;padding:12px;border-radius:16px;border:1px solid #333}
+input,textarea{width:100%;padding:12px;border-radius:12px;background:#222;color:#fff;border:1px solid #444;margin-top:6px}
+button{background:#0f5132;color:#fff;border:0;padding:12px;border-radius:20px;width:100%;font-weight:900;margin-top:8px;font-size:15px}
 .nav{position:fixed;bottom:0;left:0;right:0;background:#111;display:flex;justify-content:space-around;padding:8px;border-top:1px solid #222;z-index:99}
-.nav span{font-size:20px;padding:8px 12px;border-radius:12px;cursor:pointer}.nav.active{background:#0f5132}
-.page{display:none}.page.active{display:block}
-.vid{width:100%;border-radius:12px;background:#000;max-height:300px}
-.act{display:flex;gap:12px;margin-top:8px}.act b{cursor:pointer;padding:6px 10px;background:#222;border-radius:20px}
-.cmt{background:#222;margin-top:6px;padding:8px;border-radius:10px;font-size:14px}
-.chat{display:flex;gap:8px;padding:10px;border-bottom:1px solid #222}.chat input{flex:1}
+.nav span{font-size:22px;padding:8px 14px;border-radius:12px;cursor:pointer}.activeNav{background:#0f5132}
+.page{display:none}.page.active{display:block}.vid{width:100%;border-radius:12px;background:#000;max-height:280px}
+.act{display:flex;gap:8px;margin-top:8px}.act b{cursor:pointer;padding:7px 12px;background:#2a2a2a;border-radius:20px;font-size:13px}
+.cmt{background:#2a2a2a;margin-top:6px;padding:8px;border-radius:10px;font-size:13px}
+.userRow{display:flex;justify-content:space-between;align-items:center;padding:12px;border-bottom:1px solid #222;cursor:pointer}
+.loginBox{height:100vh;display:flex;flex-direction:column;justify-content:center;padding:20px;background:#000}
 </style></head><body>
-<header>🌿 دال سوشيال PRO</header>
+<div id="login" class="loginBox" style="display:none">
+<h2 style="text-align:center">🌿 دال سوشيال<br>تسجيل الدخول</h2>
+<div class="card"><input id="lu" placeholder="اسم المستخدم"><input id="lp" type="password" placeholder="كلمة المرور"><button onclick="doLogin()">دخول 🔥</button><small style="opacity:.6;display:block;margin-top:10px;text-align:center">أول مرة؟ اكتب أي اسم وكلمة مرور وسيتم إنشاء حسابك تلقائياً</small></div>
+</div>
+
+<div id="app" style="display:none">
+<header>🌿 دال سوشيال - <span id="uname"></span></header>
 
 <div id="home" class="page active">
-<div class="card">
-<textarea id="t" rows="2" placeholder="بماذا تفكر؟"></textarea>
-<input type="file" id="vf" accept="video/*" style="margin-top:8px">
-<button onclick="addPost()">نشر 🔥 مع فيديو</button>
-</div>
+<div class="card"><textarea id="t" rows="2" placeholder="بماذا تفكر؟"></textarea><input type="file" id="vf" accept="video/*,image/*"><button onclick="addPost()">نشر 🔥</button><small style="opacity:.5">فيديو أقل من 15 ميجا - يدعم فيديو وصورة</small></div>
 <div id="feed"></div>
 </div>
 
 <div id="videos" class="page">
-<div class="card"><input type="file" id="vf2" accept="video/*"><button onclick="addVideoPost()">نشر فيديو 🎬</button></div>
+<div class="card"><input type="file" id="vf2" accept="video/*"><button onclick="addVideoPost()">نشر فيديو 🎬</button><div id="upStatus" style="text-align:center;margin-top:6px;color:#0f8"></div></div>
 <div id="vfeed"></div>
 </div>
 
 <div id="msgs" class="page">
-<div id="mlist"></div>
-<div class="card chat"><input id="mtext" placeholder="اكتب رسالة..."><button onclick="sendMsg()" style="width:70px">ارسال</button></div>
+<div id="usersList"></div>
+<div id="chatBox" style="display:none"><div class="card"><b id="chatWith"></b> <small onclick="backUsers()" style="float:left;cursor:pointer">⬅ رجوع</small></div><div id="mlist"></div><div class="card" style="display:flex;gap:6px"><input id="mtext" placeholder="رسالة..."><button onclick="sendMsg()" style="width:70px">ارسال</button></div></div>
 </div>
 
 <div id="profile" class="page">
-<div class="card" style="text-align:center"><div style="width:70px;height:70px;background:#0f5132;border-radius:50%;margin:auto;display:flex;align-items:center;justify-content:center;font-size:30px">👤</div><br><b>بطل دال</b><br>@bdalrhym<br>📍 صنعاء<br>منشورات: <span id="pc">0</span></div>
+<div class="card" style="text-align:center"><div style="width:70px;height:70px;background:#0f5132;border-radius:50%;margin:auto;display:flex;align-items:center;justify-content:center;font-size:30px">👤</div><br><b id="pname"></b><br><span id="puser"></span><br>📍 صنعاء<br>منشورات: <span id="pc">0</span><br><br><button onclick="logout()">تسجيل خروج</button></div>
 </div>
 
 <div class="nav">
-<span id="n-home" class="active" onclick="go('home')">🏠</span>
+<span id="n-home" class="activeNav" onclick="go('home')">🏠</span>
 <span id="n-videos" onclick="go('videos')">🎬</span>
-<span onclick="go('home')" style="background:red;width:40px;height:40px;border-radius:50%;display:flex;align-items:center;justify-content:center">➕</span>
+<span onclick="go('home')" style="background:red;width:42px;height:42px;border-radius:50%;display:flex;align-items:center;justify-content:center">➕</span>
 <span id="n-msgs" onclick="go('msgs')">💬</span>
 <span id="n-profile" onclick="go('profile')">👤</span>
 </div>
+</div>
 
 <script>
-let posts=JSON.parse(localStorage.getItem("posts_pro")||"[]");
-let msgs=JSON.parse(localStorage.getItem("msgs_pro")||'[{"n":"أحمد","t":"هلا يا ضال"},{"n":"محمد","t":"شفت الفيديو؟"},{"n":"دال","t":"مرحبا بك 🌿"}]');
-function save(){localStorage.setItem("posts_pro",JSON.stringify(posts));localStorage.setItem("msgs_pro",JSON.stringify(msgs))}
+let currentUser=localStorage.getItem("dal_user");
+let posts=JSON.parse(localStorage.getItem("posts_ult")||"[]");
+let chats=JSON.parse(localStorage.getItem("chats_ult")||'{"أحمد":["هلا يا بطل كيفك؟"],"محمد":["شفت الفيديو الجديد؟"],"دال":["مرحبا بك في دال 🌿"],"سارة":["أهلين!"]}');
+let selectedChat=null;
+
+function checkLogin(){
+ if(!currentUser){document.getElementById("login").style.display="flex";document.getElementById("app").style.display="none"}
+ else{document.getElementById("login").style.display="none";document.getElementById("app").style.display="block";document.getElementById("uname").innerText=currentUser;document.getElementById("pname").innerText=currentUser;document.getElementById("puser").innerText="@"+currentUser;render()}
+}
+function doLogin(){
+ let u=document.getElementById("lu").value.trim();let p=document.getElementById("lp").value.trim();
+ if(!u||!p)return alert("اكتب اسم وكلمة مرور");
+ localStorage.setItem("dal_user",u);currentUser=u;checkLogin()
+}
+function logout(){if(confirm("خروج؟")){localStorage.removeItem("dal_user");location.reload()}}
+function save(){localStorage.setItem("posts_ult",JSON.stringify(posts));localStorage.setItem("chats_ult",JSON.stringify(chats))}
 function addPost(){
- let txt=document.getElementById("t").value; let f=document.getElementById("vf").files[0];
- if(!txt &&!f){alert("اكتب شي او اختر فيديو");return}
- if(f){let r=new FileReader();r.onload=e=>{posts.unshift({id:Date.now(),txt,src:e.target.result,type:"video",likes:0,liked:false,comments:[]});save();render();document.getElementById("t").value="";document.getElementById("vf").value="";go('home')};r.readAsDataURL(f)}else{posts.unshift({id:Date.now(),txt,src:"",type:"text",likes:0,liked:false,comments:[]});save();render();document.getElementById("t").value="";go('home')}
+ let txt=document.getElementById("t").value;let f=document.getElementById("vf").files[0];
+ if(!txt&&!f)return alert("اكتب شي");
+ if(f&&f.size>15*1024*1024)return alert("الفيديو كبير جدا - اختر فيديو أقل من 15 ميجا");
+ if(f){let r=new FileReader();r.onload=e=>{posts.unshift({id:Date.now(),user:currentUser,txt,src:e.target.result,type:f.type.startsWith("video")?"video":"image",likes:0,liked:false,comments:[]});save();render();document.getElementById("t").value="";document.getElementById("vf").value=""};r.readAsDataURL(f)}else{posts.unshift({id:Date.now(),user:currentUser,txt,src:"",type:"text",likes:0,liked:false,comments:[]});save();render();document.getElementById("t").value=""}
 }
 function addVideoPost(){
- let f=document.getElementById("vf2").files[0]; if(!f)return alert("اختر فيديو");
- let r=new FileReader();r.onload=e=>{posts.unshift({id:Date.now(),txt:"فيديو جديد 🎬",src:e.target.result,type:"video",likes:0,liked:false,comments:[]});save();render();document.getElementById("vf2").value="";go('videos')};r.readAsDataURL(f)
+ let f=document.getElementById("vf2").files[0];if(!f)return alert("اختر فيديو");
+ if(f.size>15*1024*1024)return alert("الفيديو كبير جدا! اختر فيديو أقل من 15 ميجا");
+ document.getElementById("upStatus").innerText="جاري الرفع... ⏳";
+ let r=new FileReader();r.onload=e=>{posts.unshift({id:Date.now(),user:currentUser,txt:"فيديو 🎬",src:e.target.result,type:"video",likes:0,liked:false,comments:[]});save();render();document.getElementById("vf2").value="";document.getElementById("upStatus").innerText="تم نشر الفيديو ✅";setTimeout(()=>document.getElementById("upStatus").innerText="",2000);go('videos')};r.readAsDataURL(f)
 }
-function like(id){let p=posts.find(x=>x.id==id);if(!p)return; p.liked=!p.liked; p.likes+=p.liked?1:-1; save();render()}
-function comment(id){let txt=prompt("اكتب تعليقك:"); if(!txt)return; let p=posts.find(x=>x.id==id); p.comments.push(txt); save();render()}
+function like(id){let p=posts.find(x=>x.id==id);p.liked=!p.liked;p.likes+=p.liked?1:-1;save();render()}
+function comment(id){let txt=prompt("تعليقك:");if(!txt)return;posts.find(x=>x.id==id).comments.push(currentUser+": "+txt);save();render()}
+function sharePost(id){let p=posts.find(x=>x.id==id);if(navigator.share){navigator.share({title:"دال سوشيال",text:p.txt,url:location.href})}else{prompt("انسخ الرابط للمشاركة:",p.txt);alert("تم نسخ النص - شاركه!")}}
 function render(){
- let html=posts.map(p=>`<div class=card><b>بطل دال</b><br><br>${p.txt}<br>${p.type=="video"&&p.src?`<video class=vid controls src="${p.src}"></video>`:""}<div class=act><b onclick="like(${p.id})">${p.liked?"❤️":"🤍"} ${p.likes}</b><b onclick="comment(${p.id})">💬 ${p.comments.length}</b><b>🔁 مشاركة</b></div>${p.comments.map(c=>`<div class=cmt>${c}</div>`).join("")}</div>`).join("");
- document.getElementById("feed").innerHTML=html||"<div class=card style='text-align:center;opacity:.5'>لا منشورات</div>";
- document.getElementById("vfeed").innerHTML=posts.filter(x=>x.type=="video").map(p=>`<div class=card><b>فيديو - ${p.txt}</b><br><video class=vid controls src="${p.src}"></video><div class=act><b onclick="like(${p.id})">❤️ ${p.likes}</b><b onclick="comment(${p.id})">💬 ${p.comments.length}</b></div>${p.comments.map(c=>`<div class=cmt>${c}</div>`).join("")}</div>`).join("")||"<div class=card>لا فيديوهات بعد</div>";
- document.getElementById("mlist").innerHTML=msgs.map(m=>`<div class=chat><div style="width:36px;height:36px;background:#333;border-radius:50%;display:flex;align-items:center;justify-content:center">👤</div><div><b>${m.n}</b><br><small>${m.t}</small></div></div>`).join("");
- document.getElementById("pc").innerText=posts.length;
+ let html=posts.map(p=>`<div class=card><b>👤 ${p.user}</b><br><br>${p.txt}<br>${p.type=="video"?`<video class=vid controls src="${p.src}"></video>`:p.type=="image"?`<img style="width:100%;border-radius:12px" src="${p.src}">`:""}<div class=act><b onclick="like(${p.id})">${p.liked?"❤️":"🤍"} ${p.likes}</b><b onclick="comment(${p.id})">💬 ${p.comments.length}</b><b onclick="sharePost(${p.id})">🔁 مشاركة</b></div>${p.comments.map(c=>`<div class=cmt>${c}</div>`).join("")}</div>`).join("");
+ document.getElementById("feed").innerHTML=html||"<div class=card>لا منشورات بعد</div>";
+ document.getElementById("vfeed").innerHTML=posts.filter(x=>x.type=="video").map(p=>`<div class=card><b>👤 ${p.user} - ${p.txt}</b><br><video class=vid controls src="${p.src}"></video><div class=act><b onclick="like(${p.id})">${p.liked?"❤️":"🤍"} ${p.likes}</b><b onclick="comment(${p.id})">💬 ${p.comments.length}</b><b onclick="sharePost(${p.id})">🔁 مشاركة</b></div>${p.comments.map(c=>`<div class=cmt>${c}</div>`).join("")}</div>`).join("")||"<div class=card>لا فيديوهات</div>";
+ document.getElementById("usersList").innerHTML=Object.keys(chats).map(u=>`<div class=userRow onclick="openChat('${u}')"><div>👤 <b>${u}</b><br><small>${chats[u][chats[u].length-1]||""}</small></div><div>💬</div></div>`).join("")+"<div class=card><input id=newUser placeholder=اسم شخص جديد><button onclick='addUser()'>إضافة شخص للمراسلة +</button></div>";
+ if(selectedChat){document.getElementById("mlist").innerHTML=chats[selectedChat].map(m=>`<div class=card style="margin:4px">${m}</div>`).join("")}
+ document.getElementById("pc").innerText=posts.filter(x=>x.user==currentUser).length;
 }
-function sendMsg(){let t=document.getElementById("mtext").value; if(!t)return; msgs.unshift({n:"أنت",t}); save();render();document.getElementById("mtext").value=""}
-function go(id){document.querySelectorAll('.page').forEach(e=>e.classList.remove('active'));document.querySelectorAll('.nav span').forEach(e=>e.classList.remove('active'));document.getElementById(id).classList.add('active');let nid="n-"+id;if(document.getElementById(nid))document.getElementById(nid).classList.add('active')}
-render()
+function addUser(){let n=document.getElementById("newUser").value.trim();if(!n)return;if(!chats[n])chats[n]=[];save();render()}
+function openChat(u){selectedChat=u;document.getElementById("usersList").style.display="none";document.getElementById("chatBox").style.display="block";document.getElementById("chatWith").innerText="محادثة مع "+u;render()}
+function backUsers(){selectedChat=null;document.getElementById("usersList").style.display="block";document.getElementById("chatBox").style.display="none"}
+function sendMsg(){let t=document.getElementById("mtext").value;if(!t||!selectedChat)return;chats[selectedChat].push("أنت: "+t);save();render();document.getElementById("mtext").value="";setTimeout(()=>{chats[selectedChat].push(selectedChat+": تم 👍");save();render()},800)}
+function go(id){document.querySelectorAll('.page').forEach(e=>e.classList.remove('active'));document.querySelectorAll('.nav span').forEach(e=>e.classList.remove('activeNav'));document.getElementById(id).classList.add('active');let nid="n-"+id;if(document.getElementById(nid))document.getElementById(nid).classList.add('activeNav')}
+checkLogin()
 </script></body></html>
